@@ -30,6 +30,10 @@ class Data:
     def price_indicators(self):
         indicators = ['P/VP', 'P/L', 'P/ATIVO']
         return {key:values for (key, values) in self.get_all_indicators().items() if key in indicators}
+    @property
+    def profit_indicators(self):
+        indicators = ['ROE', 'ROIC', 'Margem Bruta', 'Margem Líquida']
+        return {key: values for (key, values) in self.get_all_indicators().items() if key in indicators}
 
 if __name__ == "__main__":
     '''request = get('https://statusinvest.com.br/acoes/cvcb3').text
@@ -37,5 +41,6 @@ if __name__ == "__main__":
     soup = BeautifulSoup(request, 'html.parser')
     print(soup.select("div.width-auto:nth-child(2)"))'''
     cvc = Data(ticker='cvcb3')
-    print(cvc.price_indicators)
+    print(cvc.get_all_indicators())
+    print(cvc.profit_indicators)
 
