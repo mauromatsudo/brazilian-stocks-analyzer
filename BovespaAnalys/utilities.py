@@ -9,9 +9,19 @@ class Data:
     def get_indicators(self):
         html = get(self._url).text
         soup = BeautifulSoup(html, 'html.parser')
-        html_table = soup.select("div.width-auto:nth-child(2)")
-        return
-
+        html_table = soup.select("div.width-auto:nth-child(2)")[0]
+        indicators = html_table.find_all('h3')
+        valuations = html_table.find_all('strong')
+        keys, values  = [], []
+        for index in range(len(valuations)):
+            keys.append(indicators[index].text)
+            value = valuations[index].text
+            if '%' in value:
+                value = value[:-1]
+            value = value.replace(',', '.')
+            values.append(float(value))
+        fundamental_indicators = dict(zip(keys, values))
+        return fundamental_indicators
 if __name__ == "__main__":
     '''request = get('https://statusinvest.com.br/acoes/cvcb3').text
 
