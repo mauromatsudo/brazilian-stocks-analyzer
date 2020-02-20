@@ -18,8 +18,12 @@ class Data:
             value = valuations[index].text
             if '%' in value:
                 value = value[:-1]
-            value = value.replace(',', '.')
-            values.append(float(value))
+            try:
+                value = value.replace(',', '.')
+                value = float(value)
+            except ValueError:
+                value = valuations[index].text
+            values.append(value)
         fundamental_indicators = dict(zip(keys, values))
         return fundamental_indicators
 if __name__ == "__main__":
