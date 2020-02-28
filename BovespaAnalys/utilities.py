@@ -1,6 +1,6 @@
 from requests import get
 from bs4 import BeautifulSoup
-#import pandas as pd
+import pandas as pd
 
 class Data:
     def __init__(self, ticker):
@@ -29,6 +29,7 @@ class Data:
                 value = float(value)
             except ValueError:
                 value = 'Not avaiable'
+            valuations[index] = value
         fundamental_indicators = dict(zip(indicators, valuations))
         return fundamental_indicators
 
@@ -38,15 +39,15 @@ class Stock(Data):
         return f'BrazilianStock object <{self._ticker.upper()}>'
     @property
     def profit_indicators(super):
-        indicators = ['ROE', 'ROIC', 'Margem Ebitda', 'Margem Líquida']
+        indicators = ('ROE', 'ROIC', 'Margem Ebitda', 'Margem Líquida')
         return {key: values for (key, values) in super.get_all_indicators().items() if key in indicators}
     @property
     def price_indicators(self):
-        indicators = ['P/VP', 'P/L', 'P/Ativo']
+        indicators = ('P/VP', 'P/L', 'P/Ativo')
         return {key:values for (key, values) in self.get_all_indicators().items() if key in indicators}
     @property
     def debt_indicators(self):
-        indicators = ['Dívida Líq/Patrim', 'Dívida Líq/EBITDA',  'Passivos / Ativos']
+        indicators = ('Dívida Líquida / Patrimônio', 'Dívida Líquida / EBITDA',  'Passivos / Ativos')
         # there is a pŕoblem with this indicators, because the html source get more h3 tags here, and some
         # indicadors are not the same
         return {key: values for (key, values) in self.get_all_indicators().items() if key in indicators}
@@ -65,34 +66,34 @@ class Analyzer:
                 'P/Ativo': 2},
             'profit_indicators': {
                 'Margem Ebtida': 15,
-                'MAargem Liquida': 8,
+                'Margem Líquida': 8,
                 'ROE': 10,
                 'ROIC': 5},
             'debt_indicadors': {
                 'Dívida Líq/Patrim': 1,
                 'Dívida Líq/EBITDA': 3,
                 'Passivos / Ativos': 1}}
-    '''def _analyze(self, indicadors, indicator_type):
-        reference = self._basic_fundamentals[indicator_type]
-        ignore = 0
-        points = 0 #para diferenciar dados não disponíveis de empresas que não cumprem o critério mínimo
-        for indicator in reference.keys():
-            print(indicadors[indicator], reference[indicator])
-            if indicadors[indicator] == 'Not avaiable':
-                ignore += 1
-                continue
-            elif indicadors[indicator] < reference[indicator]:
-                points += 1
-            elif indicadors[indicator] * 5 < reference[indicator]:
-                pass
-        self._points += points/(len(reference.keys())) - ignore
 
-    def analyze_debt(self, indicators):
-        self._analyze(indicators, 'debt_indicadors')'''
-    def analyze_profit(self, ticker_indicators):
-        pass
-
-
+    def analyze_metrics(self, indicators):
+        chosen_metrics = ('ROE', 'ROIC', 'Margem Ebitda', 'Margem Líquida', 'P/VP', 'P/L', 'P/Ativo',
+                          'Dívida Líquida / Patrimônio', 'Dívida Líquida / EBITDA',  'Passivos / Ativos')
+        indicators = {key: indicators[key] for key in chosen_metrics}
+        metrics_df = pd.DataFrame.from_dict(indicators, orient='index', columns=["Current Value"])
+        for column in ("Min", "Max", "Weigh", " +Points", "-Points"):
+            metrics_df[column] = pd.Series()
+        '''metrics_df.loc['ROE', 'Min'] = 10
+        metrics_df.loc['ROIC', 'Min'] = 5
+        metrics_df.loc['Margem Ebitda', 'Min'] = 15
+        metrics_df.loc['Margem Líquida', 'Min'] = 8
+        metrics_df.loc['P/VP', 'Min'] = 0.8
+        metrics_df.loc['P/L', 'Min'] = 3
+        metrics_df.loc['P/Ativo', 'Min'] = 0,6
+        metrics_df.loc['ROE', 'Max'] = 100
+        metrics_df.loc['ROIC']['Max'] = 80
+        metrics_df.loc['Margem Líquida']
+        print(metrics_df.loc[['ROE'], ['Current Value', "Max"]])'''
+        #metrics_df.loc[['ROE'], ['Min', 'Max']] = 10, 100
+        print(metrics_df)
 
 
 if __name__ == "__main__":
@@ -108,6 +109,6 @@ if __name__ == "__main__":
     clas = Stock('cvcb3')
     print(clas.get_all_indicators())
     print(clas.price_indicators, '\n', clas.profit_indicators, '\n', clas.debt_indicators)'''
-    ana = Analyzer('bidi4')
+    ana = Analyzer('cvcb3')
     stock = Stock('cvcb3')
-    print(stock.get_all_indicators())
+    ana.analyze_metrics(stock.get_all_indicators())
