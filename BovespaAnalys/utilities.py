@@ -51,17 +51,19 @@ class Firm(Stock):
         # there is a pŕoblem with this indicators, because the html source get more h3 tags here, and some
         # indicadors are not the same
         return {key: values for (key, values) in self.get_all_indicators().items() if key in indicators}
-
 class  B3:
     def __repr__(self):
         return 'Brazilian Trader object'
+    def __init__(self):
+        self._firms = pd.read_excel('data/B3_list.xlsx')
     @property
     def overall_report(self):
-        return pd.read_excel('data/B3_list.xlsx')
+        return self._firms
     @property
     def companies_list(self):
-        return tuple(self.overall_report['Ticker'])
-
+        return tuple(self._firms['Ticker'])
+    def get_by_industry(self, industry):
+        return tuple(self._firms[self._firms['Industry'] == industry]['Ticker'])
 class Analyzer:
     def __repr__(self):
       return f'FundamentalAnalyzer object'
@@ -105,4 +107,4 @@ if __name__ == "__main__":
     clas = Stock('cvcb3')
     print(clas.get_all_indicators())
     print(clas.price_indicators, '\n', clas.profit_indicators, '\n', clas.debt_indicators)'''
-    print(B3().companies_list)
+    print(B3().get_by_industry('Materiais Básicos'))
