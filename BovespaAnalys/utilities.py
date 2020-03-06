@@ -59,8 +59,8 @@ class  B3:
     def overall_report(self):
         return pd.read_excel('data/B3_list.xlsx')
     @property
-    def compies_list(self):
-        return
+    def companies_list(self):
+        return tuple(self.overall_report['Ticker'])
 
 class Analyzer:
     def __repr__(self):
@@ -105,4 +105,4 @@ if __name__ == "__main__":
     clas = Stock('cvcb3')
     print(clas.get_all_indicators())
     print(clas.price_indicators, '\n', clas.profit_indicators, '\n', clas.debt_indicators)'''
-    print(B3().overall_report)
+    print(B3().companies_list)
