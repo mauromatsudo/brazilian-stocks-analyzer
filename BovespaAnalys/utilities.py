@@ -2,7 +2,7 @@ from requests import get
 from bs4 import BeautifulSoup
 import pandas as pd
 
-class Data:
+class Stock:
     def __init__(self, ticker):
         self._ticker = ticker
         self._url = f'https://statusinvest.com.br/acoes/{self._ticker}'
@@ -34,7 +34,7 @@ class Data:
         return fundamental_indicators
 
 
-class Stock(Data):
+class Firm(Stock):
     def __repr__(self):
         return f'BrazilianStock object <{self._ticker.upper()}>'
     @property
@@ -52,10 +52,19 @@ class Stock(Data):
         # indicadors are not the same
         return {key: values for (key, values) in self.get_all_indicators().items() if key in indicators}
 
+class  B3:
+    def __repr__(self):
+        return 'Brazilian Trader object'
+    @property
+    def overall_report(self):
+        return pd.read_excel('data/B3_list.xlsx')
+    @property
+    def compies_list(self):
+        return
 
 class Analyzer:
     def __repr__(self):
-      return f'FundamentalAnalyzer obecjt'
+      return f'FundamentalAnalyzer object'
     def __init__(self, ticker):
         self._ticker = ticker
         self._points = 0
@@ -81,19 +90,6 @@ class Analyzer:
         metrics_df = pd.DataFrame.from_dict(indicators, orient='index', columns=["Current Value"])
         for column in ("Min", "Max", "Weigh", " +Points", "-Points"):
             metrics_df[column] = pd.Series()
-        '''metrics_df.loc['ROE', 'Min'] = 10
-        metrics_df.loc['ROIC', 'Min'] = 5
-        metrics_df.loc['Margem Ebitda', 'Min'] = 15
-        metrics_df.loc['Margem Líquida', 'Min'] = 8
-        metrics_df.loc['P/VP', 'Min'] = 0.8
-        metrics_df.loc['P/L', 'Min'] = 3
-        metrics_df.loc['P/Ativo', 'Min'] = 0,6
-        metrics_df.loc['ROE', 'Max'] = 100
-        metrics_df.loc['ROIC']['Max'] = 80
-        metrics_df.loc['Margem Líquida']
-        print(metrics_df.loc[['ROE'], ['Current Value', "Max"]])'''
-        #metrics_df.loc[['ROE'], ['Min', 'Max']] = 10, 100
-        print(metrics_df)
 
 
 if __name__ == "__main__":
@@ -109,6 +105,4 @@ if __name__ == "__main__":
     clas = Stock('cvcb3')
     print(clas.get_all_indicators())
     print(clas.price_indicators, '\n', clas.profit_indicators, '\n', clas.debt_indicators)'''
-    ana = Analyzer('cvcb3')
-    stock = Stock('cvcb3')
-    ana.analyze_metrics(stock.get_all_indicators())
+    print(B3().overall_report)
