@@ -1,7 +1,5 @@
-import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
-#from selenium.common.exceptions import ElementClickInterceptedException
 from selenium.webdriver.firefox.options import Options
 from time import sleep
 import pandas as pd
@@ -18,19 +16,24 @@ while (True):
     try:
         # Select the frequency
         browser.find_element_by_xpath('/html/body/main/div[4]/div/div/div[2]/header/div[2]/div[1]/a').click()
+        sleep(2)
         browser.find_element_by_xpath("/html/body/main/div[4]/div/div/div[2]/header/div[2]/div[1]/ul/li[2]/a").click()
 
         # Remove delta H
         browser.find_element_by_xpath("/html/body/main/div[4]/div/div/div[2]/header/div[2]/div[2]/div/input").click()
+        sleep(2)
         browser.find_element_by_xpath("/html/body/main/div[4]/div/div/div[2]/header/div[2]/div[2]/div/ul/li[4]/span").click()
+        sleep(2)
         browser.find_element_by_xpath("/html/body/main/div[4]/div/div/div[2]/header/div[2]/div[3]/div[1]/input").click()
+        sleep(2)
 
         # Select the historical period
         # need two lines one to remove the click from the DATA (DELTA h) and another to really select the period field
         browser.find_element_by_xpath("/html/body/main/div[4]/div/div/div[2]/header/div[2]/div[3]/div[1]/input").click()
+        sleep(2)
         browser.find_element_by_xpath("/html/body/main/div[4]/div/div/div[2]/header/div[2]/div[3]/div[1]/ul/li[8]/span").click()
+        sleep(2)
         break
-    #except ElementClickInterceptedException:
     except:
         browser.quit()
         browser = webdriver.Firefox()
