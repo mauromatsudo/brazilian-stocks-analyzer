@@ -51,6 +51,7 @@ class Firm(Stock):
         # there is a pŕoblem with this indicators, because the html source get more h3 tags here, and some
         # indicadors are not the same
         return {key: values for (key, values) in self.get_all_indicators().items() if key in indicators}
+
 class  B3:
     def __repr__(self):
         return 'Brazilian Trader object'
