@@ -36,9 +36,11 @@ class Plan:
             file.extractall()
         return openpyxl.load_workbook(name)
 
-    def organize_plan(self):
-        #plan = self.download_plan()
-        plan = openpyxl.load_workbook("Setorial B3 03-03-2020 (português).xlsx")
+    def organize_plan(self, download_new=False):
+        if download_new == True:
+            plan = self.download_plan()
+        else:
+            plan = openpyxl.load_workbook("Setorial B3 03-03-2020 (português).xlsx")
         # It'll select the first plan doesn't matter its name, so it b3 change it, there'll be no effect
         sheet = plan[plan.sheetnames[0]]
         # Nornally the column D is responsable to store the ticker, so it will be our reference
