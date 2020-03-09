@@ -49,23 +49,25 @@ class Plan:
         for row in sheet.iter_rows(min_row=1, max_row= max_row_d, min_col=4 ,max_col=4): # iterating the rows containing the tickers code
             current_row = row[0]
             ticker = current_row.value
+            # Note every classification is taken based on the way they are organized at the plan
             industry_cell = sheet.cell(row=current_row.row, column=1)  # the instustry sector is stored in the first column
-            sub_industry_cell = sheet.cell(row = current_row.row, column=2)
-            # the sub-instustry sector is stored in the second column
+            if  industry_cell.value == 'SETOR ECONÔMICO':
+                # the general industry is defined bellow the 'SETOR ECONÔMICO' header, however that header his merged and occupies
+                # 2 rows, that's why there +2. Note that, until the next header, all the firms belongs to the same industry
+                industry = sheet.cell(row=(industry_cell.row+2), column=1).value
+            sub_industry_cell = sheet.cell(row = current_row.row, column=2) # the sub-instustry sector is stored in the second column
             if current_row.row > 6 and sub_industry_cell.value is not None and sub_industry_cell.value != 'SUBSETOR':
                 sub_industry = sub_industry_cell.value
-            if  industry_cell.value == 'SETOR ECONÔMICO':
-                # the general industry is defined bellow the 'SETOR ECONÔMICO' header, however that header his merged and
-                # occupies 2 rows, that's why there +2. Note that, until the next header, all the firms belongs to the
-                # same industry
-                industry = sheet.cell(row=(industry_cell.row+2), column=1).value
+            segment_cell = sheet.cell(row=current_row.row, column=3)
+            if segment_cell.row > 6 and segment_cell.value is not None and ticker is None:
+                segment = segment_cell.value
             if ticker != None and (len(ticker) == 4):
-                #tickers.append(ticker)
                 row_addr = current_row.row
                 tickers[row_addr] = {'Ticker': ticker,
                                     'Trade Name': sheet.cell(row=row_addr, column=3).value.strip(),
                                      'Industry': industry.strip(),
-                                     'Sub-Industry': sub_industry.strip()}
+                                     'Sub-Industry': sub_industry.strip(),
+                                     'Segment': segment}
         b3_df = DataFrame.from_dict(tickers, orient='index')
         b3_df.to_excel("B3_list.xlsx", index=False)
 
