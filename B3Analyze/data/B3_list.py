@@ -46,10 +46,14 @@ class Plan:
         # Nornally the column D is responsable to store the ticker, so it will be our reference
         max_row_d = max((d.row for d in sheet['D'] if d.value is not None)) # Get the number of companies trade in B3
         tickers = {}
-        for row in sheet.iter_rows(min_row=1, max_row= max_row_d, min_col=4 ,max_col=4): # iterating the rows with the tickers
+        for row in sheet.iter_rows(min_row=1, max_row= max_row_d, min_col=4 ,max_col=4): # iterating the rows containing the tickers code
             current_row = row[0]
             ticker = current_row.value
             industry_cell = sheet.cell(row=current_row.row, column=1)  # the instustry sector is stored in the first column
+            sub_industry_cell = sheet.cell(row = current_row.row, column=2)
+            # the sub-instustry sector is stored in the second column
+            if current_row.row > 6 and sub_industry_cell.value is not None and sub_industry_cell.value != 'SUBSETOR':
+                sub_industry = sub_industry_cell.value
             if  industry_cell.value == 'SETOR ECONÔMICO':
                 # the general industry is defined bellow the 'SETOR ECONÔMICO' header, however that header his merged and
                 # occupies 2 rows, that's why there +2. Note that, until the next header, all the firms belongs to the
@@ -60,7 +64,8 @@ class Plan:
                 row_addr = current_row.row
                 tickers[row_addr] = {'Ticker': ticker,
                                     'Trade Name': sheet.cell(row=row_addr, column=3).value.strip(),
-                                     'Industry': industry.strip()}
+                                     'Industry': industry.strip(),
+                                     'Sub-Industry': sub_industry.strip()}
         b3_df = DataFrame.from_dict(tickers, orient='index')
         b3_df.to_excel("B3_list.xlsx", index=False)
 
