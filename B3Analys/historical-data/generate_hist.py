@@ -7,7 +7,7 @@ import pandas as pd
 url = 'https://statusinvest.com.br/acoes/cvcb3'
 
 option = Options()
-option.headless = True
+option.headless = True 
 browser = webdriver.Firefox()
 browser.get(url)
 sleep(5)
